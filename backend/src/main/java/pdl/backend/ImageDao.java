@@ -1,5 +1,6 @@
 package pdl.backend;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -18,12 +19,16 @@ public class ImageDao implements Dao<Image> {
   private final Map<Long, Image> images = new HashMap<>();
 
   public ImageDao() {
-    final ClassPathResource imgFile = new ClassPathResource("test.jpg");
-    byte[] fileContent;
+    final ClassPathResource imgFolder = new ClassPathResource("/images");
     try {
-      fileContent = Files.readAllBytes(imgFile.getFile().toPath());
-      Image img = new Image("test.jpg", fileContent);
-      images.put(img.getId(), img);
+      File[] files = imgFolder.getFile().listFiles();
+      for (File file : files) {
+        if (file.isFile() && (file.getName().endsWith(".jpg") ||  file.getName().endsWith(".png"))) {
+          byte[] fileContent = Files.readAllBytes(file.toPath());
+          Image img = new Image(file.getName(), fileContent);
+          images.put(img.getId(), img);
+        }
+      }
     } catch (final IOException e) {
       e.printStackTrace();
     }

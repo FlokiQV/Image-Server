@@ -83,12 +83,12 @@ public class ImageController {
     List<Image> images = imageDao.retrieveAll();
     ArrayNode nodes = mapper.createArrayNode();
     for (Image image : images) {
-      ObjectNode objectNode = mapper.createObjectNode();
-      objectNode.put("id", image.getId());
-      objectNode.put("name", image.getName());
-      nodes.add(objectNode);
+        ObjectNode objectNode = mapper.createObjectNode();
+        objectNode.put("id", image.getId());
+        objectNode.put("name", image.getName());
+        nodes.add(objectNode);
     }
     return nodes;
-  }
+}
 
 }
