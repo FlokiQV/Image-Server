@@ -1,15 +1,22 @@
 package pdl.backend;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import org.springframework.core.io.ClassPathResource;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
+import java.nio.file.Files;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.net.URL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
@@ -65,10 +72,7 @@ public class ImageController {
   public ResponseEntity<?> addImage(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
 
     String contentType = file.getContentType();
-    if (!contentType.equals(MediaType.IMAGE_JPEG.toString())) {
-      return new ResponseEntity<>("Only JPEG file format supported", HttpStatus.UNSUPPORTED_MEDIA_TYPE);
-    }
-
+  
     try {
       imageDao.create(new Image(file.getOriginalFilename(), file.getBytes()));
     } catch (IOException e) {
@@ -79,7 +83,17 @@ public class ImageController {
 
   @RequestMapping(value = "/images", method = RequestMethod.GET, produces = "application/json")
   @ResponseBody
-  public ArrayNode getImageList() {
+  public JsonNode getImageList() throws IOException {
+    
+    Path imagesDirectory = Paths.get("backend","src", "main", "resources", "images");
+    if (!Files.exists(imagesDirectory) || !Files.isDirectory(imagesDirectory)) {
+        String errorMessage = "Le dossier 'images' est introuvable.";
+        ObjectNode errorNode = mapper.createObjectNode();
+        errorNode.put("error", errorMessage);
+        return errorNode;
+    }
+
+
     List<Image> images = imageDao.retrieveAll();
     ArrayNode nodes = mapper.createArrayNode();
     for (Image image : images) {
@@ -89,6 +103,4 @@ public class ImageController {
         nodes.add(objectNode);
     }
     return nodes;
-}
-
-}
+}}
