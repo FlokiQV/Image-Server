@@ -81,6 +81,16 @@ public class ImageController {
     return new ResponseEntity<>("Image uploaded", HttpStatus.OK);
   }
 
+  private String getFileType(String fileName) {
+    int lastDotIndex = fileName.lastIndexOf('.');
+    if (lastDotIndex != -1) {
+      return fileName.substring(lastDotIndex + 1);
+    } else {
+      return "";
+    }
+  }
+  
+
   @RequestMapping(value = "/images", method = RequestMethod.GET, produces = "application/json")
   @ResponseBody
   public JsonNode getImageList() throws IOException {
@@ -100,6 +110,11 @@ public class ImageController {
         ObjectNode objectNode = mapper.createObjectNode();
         objectNode.put("id", image.getId());
         objectNode.put("name", image.getName());
+        objectNode.put("size", image.getData().length);
+        objectNode.put("type", getFileType(image.getName()));
+
+        
+
         nodes.add(objectNode);
     }
     return nodes;

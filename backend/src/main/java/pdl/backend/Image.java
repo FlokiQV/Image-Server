@@ -5,6 +5,8 @@ public class Image {
   private Long id;
   private String name;
   private byte[] data;
+  private String type; // ajout de la propriété "type"
+
 
   public Image(final String name, final byte[] data) {
     id = count++;
@@ -27,4 +29,11 @@ public class Image {
   public byte[] getData() {
     return data;
   }
+  public String getType() { // ajout du getter pour la propriété "type"
+  return type;
+}
+
+public void setType(String type) { // ajout du setter pour la propriété "type"
+  this.type = type;
+}
 }
