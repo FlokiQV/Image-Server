@@ -8,6 +8,7 @@ import org.springframework.core.io.ClassPathResource;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -95,14 +96,16 @@ public class ImageController {
   @ResponseBody
   public JsonNode getImageList() throws IOException {
     
-    Path imagesDirectory = Paths.get("backend","src", "main", "resources", "images");
-    if (!Files.exists(imagesDirectory) || !Files.isDirectory(imagesDirectory)) {
+   
+    Path baseDirectory = Paths.get("backend","src", "main", "resources");
+    Path imagesDirectory = findImagesDirectory(baseDirectory);
+    
+    if (imagesDirectory == null) {
         String errorMessage = "Le dossier 'images' est introuvable.";
         ObjectNode errorNode = mapper.createObjectNode();
         errorNode.put("error", errorMessage);
         return errorNode;
     }
-
 
     List<Image> images = imageDao.retrieveAll();
     ArrayNode nodes = mapper.createArrayNode();
@@ -118,4 +121,23 @@ public class ImageController {
         nodes.add(objectNode);
     }
     return nodes;
-}}
+}
+
+private Path findImagesDirectory(Path directory) throws IOException {
+  if (Files.exists(directory) && Files.isDirectory(directory)) {
+      Path imagesDirectory = directory.resolve("images");
+      if (Files.exists(imagesDirectory) && Files.isDirectory(imagesDirectory)) {
+          return imagesDirectory;
+      } else {
+          try (DirectoryStream<Path> subDirectories = Files.newDirectoryStream(directory)) {
+              for (Path subDirectory : subDirectories) {
+                  Path imagesSubDirectory = findImagesDirectory(subDirectory);
+                  if (imagesSubDirectory != null) {
+                      return imagesSubDirectory;
+                  }
+              }
+          }
+      }
+  }
+  return null;}
+}
