@@ -16,8 +16,22 @@ const requests = {
 };
 
 export const api = {
-  getImageList: (): Promise<ImageType[]> => requests.get('images', {}),
-  getImage: (id: number): Promise<Blob> => requests.get(`images/${id}`, { responseType: "blob" }),
+  getImageList: (): Promise<ImageType[]> => {
+    return new Promise((resolve, reject) => {
+      instance.get('images')
+        .then((response) => resolve(responseBody(response)))
+        .catch((error) => {
+          if (error.response && error.response.status === 404) {
+            instance.get('images/search')
+              .then((response) => resolve(responseBody(response)))
+              .catch((error) => reject(error));
+          } else {
+            reject(error);
+          }
+        });
+    });
+  },
+    getImage: (id: number): Promise<Blob> => requests.get(`images/${id}`, { responseType: "blob" }),
   createImage: (form: FormData): Promise<ImageType> => requests.post('images', form),
   deleteImage: (id: number): Promise<void> => requests.delete(`images/${id}`),
 };
