@@ -72,10 +72,13 @@ public class ImageController {
     }
     return new ResponseEntity<>("Image id=" + id + " not found.", HttpStatus.NOT_FOUND);
   }
+
+
+  
   @RequestMapping(value = "/images", method = RequestMethod.POST)
   public ResponseEntity<?> addImage(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
       String contentType = file.getContentType();
-      if (!contentType.equals("jpeg") && !contentType.equals("png")) {
+      if (!contentType.endsWith("jpeg")  && !contentType.endsWith("png")) {
         return new ResponseEntity<>("415 Unsupported Media Type ", HttpStatus.UNSUPPORTED_MEDIA_TYPE);
     }
 
