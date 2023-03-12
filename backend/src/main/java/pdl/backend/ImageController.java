@@ -52,13 +52,16 @@ public class ImageController {
   @RequestMapping(value = "/images/{id}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
   public ResponseEntity<?> getImage(@PathVariable("id") long id) {
 
+    if (id <= 0) {
+      return new ResponseEntity<>("id doit être positif", HttpStatus.NOT_FOUND);
+    }
     Optional<Image> image = imageDao.retrieve(id);
 
     if (image.isPresent()) {
       InputStream inputStream = new ByteArrayInputStream(image.get().getData());
       return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(new InputStreamResource(inputStream));
     }
-    return new ResponseEntity<>("Image id=" + id + " not found.", HttpStatus.NOT_FOUND);
+    return new ResponseEntity<>("Aucune image existante avec l’identifiant id=" + id, HttpStatus.NOT_FOUND);
   }
 
   @RequestMapping(value = "/images/{id}", method = RequestMethod.DELETE)
