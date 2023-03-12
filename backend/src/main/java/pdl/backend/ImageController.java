@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.springframework.core.io.ClassPathResource;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.nio.file.DirectoryStream;
@@ -68,28 +69,33 @@ public class ImageController {
     }
     return new ResponseEntity<>("Image id=" + id + " not found.", HttpStatus.NOT_FOUND);
   }
-
   @RequestMapping(value = "/images", method = RequestMethod.POST)
   public ResponseEntity<?> addImage(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
+      String contentType = file.getContentType();
+      if (!contentType.equals("jpeg") && !contentType.equals("png")) {
+        return new ResponseEntity<>("415 Unsupported Media Type ", HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+    }
 
-    String contentType = file.getContentType();
+      try {
+          imageDao.create(new Image(file.getOriginalFilename(), file.getBytes()));
+      } catch (IOException e) {
+          return new ResponseEntity<>("Erreur lors de la lecture du fichier", HttpStatus.NO_CONTENT);
+      }
   
-    try {
-      imageDao.create(new Image(file.getOriginalFilename(), file.getBytes()));
-    } catch (IOException e) {
-      return new ResponseEntity<>("Failure to read file", HttpStatus.NO_CONTENT);
-    }
-    return new ResponseEntity<>("Image uploaded", HttpStatus.OK);
+    
+      return new ResponseEntity<>("Image téléchargée", HttpStatus.OK);
   }
-
+  
+  
   private String getFileType(String fileName) {
-    int lastDotIndex = fileName.lastIndexOf('.');
-    if (lastDotIndex != -1) {
-      return fileName.substring(lastDotIndex + 1);
-    } else {
-      return "";
-    }
+      int lastDotIndex = fileName.lastIndexOf('.');
+      if (lastDotIndex != -1) {
+          return fileName.substring(lastDotIndex + 1).toLowerCase();
+      } else {
+          return "";
+      }
   }
+  
   
 
   @RequestMapping(value = "/images", method = RequestMethod.GET, produces = "application/json")
