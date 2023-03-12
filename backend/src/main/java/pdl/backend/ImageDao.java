@@ -30,7 +30,7 @@ public class ImageDao implements Dao<Image> {
       if (imagesDirectory != null) {
         File[] files = imagesDirectory.toFile().listFiles();
         for (File file : files) {
-          if (file.isFile() && (file.getName().endsWith(".jpeg") ||  file.getName().endsWith(".png"))) {
+          if (file.isFile() &&file.getName().endsWith(".jpg") || (file.getName().endsWith(".jpeg") ||  file.getName().endsWith(".png"))) {
             byte[] fileContent = Files.readAllBytes(file.toPath());
             Image img = new Image(file.getName(), fileContent);
             images.put(img.getId(), img);
