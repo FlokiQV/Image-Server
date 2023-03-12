@@ -32,6 +32,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+
 
 @RestController
 public class ImageController {
@@ -119,9 +122,16 @@ public class ImageController {
         ObjectNode objectNode = mapper.createObjectNode();
         objectNode.put("id", image.getId());
         objectNode.put("name", image.getName());
-        objectNode.put("size", image.getData().length);
         objectNode.put("type", getFileType(image.getName()));
+        // image dimensions
+      try (ByteArrayInputStream bis = new ByteArrayInputStream(image.getData())) {
+          BufferedImage bufferedImage = ImageIO.read(bis);
+          int width = bufferedImage.getWidth();
+          int height = bufferedImage.getHeight();
+          objectNode.put("size", " " + width + "*" + height);
+      } catch (Exception e) {
 
+      }
         
 
         nodes.add(objectNode);
