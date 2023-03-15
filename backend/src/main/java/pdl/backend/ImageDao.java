@@ -1,7 +1,11 @@
 package pdl.backend;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,8 +17,18 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import javax.imageio.ImageIO;
+
+import boofcv.io.image.ConvertBufferedImage;
+import boofcv.struct.image.GrayU8;
+import boofcv.struct.image.Planar;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Repository;
+
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Repository;
+import javax.imageio.ImageIO;
+
 
 @Repository
 public class ImageDao implements Dao<Image> {
@@ -84,5 +98,39 @@ public class ImageDao implements Dao<Image> {
   @Override
   public void delete(final Image img) {
     images.remove(img.getId());
+  }
+
+  public Optional<Image> processing(final EnumProcessing algo, final Image img, final float[] options) throws Exception {
+    InputStream is = new ByteArrayInputStream(img.getData());
+    BufferedImage buffImage = ImageIO.read(is);
+    Planar<GrayU8> input = ConvertBufferedImage.convertFromPlanar(buffImage, null, true, GrayU8.class);
+    Planar<GrayU8> output = input.createSameShape();
+    switch(algo){
+      case LUMI:
+        ImagesAlgorithmes.lumirgb(input, output, (int)options[0]);
+        break;
+      case COLOR:
+        ImagesAlgorithmes.teinteImage(input, output, options[0]);
+        break;
+      case FLOUMOY:
+        ImagesAlgorithmes.moyrgb(input, output, (int)options[0]);
+        break;
+      case FLOUGAUSS:
+      ImagesAlgorithmes.GaussFilterRGB(input, output);
+        break;
+      case HISTO:
+        ImagesAlgorithmes.historgb(input, output);
+        break;
+      case SOBEL:
+        ImagesAlgorithmes.gradientImageSobelRGB(input, output);
+        break;
+    }
+    ConvertBufferedImage.convertTo_U8(output, buffImage, true);
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    ImageIO.write(buffImage, "png", out);
+    byte[] outputBytes = out.toByteArray();
+    Image outputImage = new Image(img.getName(), outputBytes);
+
+    return Optional.ofNullable(outputImage);//faire transformation du output en image
   }
 }
