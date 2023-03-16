@@ -20,17 +20,23 @@ export const api = {
       instance.get('images')
         .then((response) => resolve(responseBody(response)))
         .catch((error) => {
+                    // Si le dossier images n'existe pas, on essaye de récupérer les images depuis la recherche
+
           if (error.response && error.response.status === 404) {
             instance.get('images/search')
               .then((response) => resolve(responseBody(response)))
               .catch((error) => {
+                // Si le dossier images n'existe pas et que la recherche n'a pas retourné de résultats, on rejette la promesse avec une erreur
+
                 if (error.response && error.response.status === 404) {
                   reject(new Error("Le dossier 'images' n'a pas été trouvé."));
                 } else {
+                  // Sinon, on rejette la promesse avec l'erreur obtenue
                   reject(error);
                 }
               });
           } else {
+            // Si une autre erreur s'est produite, on rejette la promesse avec l'erreur obtenue
             reject(error);
           }
         });
