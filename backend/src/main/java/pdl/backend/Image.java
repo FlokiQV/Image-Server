@@ -29,11 +29,11 @@ public class Image {
   public byte[] getData() {
     return data;
   }
-  public String getType() { // ajout du getter pour la propriété "type"
+  public String getType() { // getter pour la propriété "type"
   return type;
 }
 
-public void setType(String type) { // ajout du setter pour la propriété "type"
+public void setType(String type) { // setter pour la propriété "type"
   this.type = type;
 }
 }

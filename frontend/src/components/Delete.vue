@@ -21,8 +21,10 @@ import { ImageType } from '@/image';
 const selectedId = ref<number>(-1);
 const imageList = ref<ImageType[]>([]);
 
+// Appeler la fonction pour récupérer la liste d'images 
 getImageList();
 
+// Fonction pour récupérer la liste d'images via l'API
 function getImageList() {
   api.getImageList()
     .then((data) => {
@@ -33,10 +35,12 @@ function getImageList() {
     });
 }
 
+// Fonction pour supprimer l'image sélectionnée via l'API
 function deleteImage() {
   if (selectedId.value !== -1) {
     api.deleteImage(selectedId.value)
       .then(() => {
+         // Réinitialiser l'id de l'image sélectionnée et récupérer la nouvelle liste d'images
         selectedId.value = -1;
         getImageList();
       })
