@@ -100,6 +100,7 @@ public class ImageDao implements Dao<Image> {
     images.remove(img.getId());
   }
 
+  // Une méthode pour faire tourner l'algorithm sur une image dans la classe ImageController
   public Optional<Image> processing(final EnumProcessing Algo, final Image img, final float[] options) throws Exception {
     InputStream is = new ByteArrayInputStream(img.getData());
     BufferedImage buffImage = ImageIO.read(is);

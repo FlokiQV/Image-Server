@@ -243,6 +243,7 @@ private Path findImagesDirectory(Path directory) throws IOException {
     return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(new InputStreamResource(inputStream));
   }
 
+  
   @RequestMapping(value = "/images/{id}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE, params = {"algorithm"})
   public ResponseEntity<?> getImage (@PathVariable("id") long id, @RequestParam ("algorithm") String Algo) {
     Optional<Image> image = imageDao.retrieve(id);
