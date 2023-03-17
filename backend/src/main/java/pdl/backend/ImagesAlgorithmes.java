@@ -44,7 +44,7 @@ public class ImagesAlgorithmes {
 	}
 
     // Mean Filter
-    public static void moyrgb(Planar<GrayU8> input, Planar<GrayU8> output, int size) {
+    public static void MeanFilterColor(Planar<GrayU8> input, Planar<GrayU8> output, int size) {
 
         for (int y = 0; y < input.height; ++y) {
           for (int x = 0; x < input.width; ++x) {
@@ -65,6 +65,7 @@ public class ImagesAlgorithmes {
       }
     }
 
+    // Mean Filter GrayU8
     public static void meanFilterSimple(GrayU8 input, GrayU8 output, int size) {
         if(size%2 == 0) {size= size - 1;}
         int taille = (int)Math.floor(size/2);
