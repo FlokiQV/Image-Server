@@ -162,4 +162,124 @@ private Path findImagesDirectory(Path directory) throws IOException {
       }
   }
   return null;}
+
+
+  // Besoin 8 : Exécution d’algorithmes par le serveur
+
+  @RequestMapping (value = "/images/{id}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE, params = {"algorithm", "p1", "p2"})
+  public ResponseEntity<?> getImage(@PathVariable("id") long id, @RequestParam("algorithm") String Algo, @RequestParam("p1") Float p1, @RequestParam("p2") Float p2) {
+    Optional<Image> image = imageDao.retrieve(id);
+    System.out.println("First Parameter");
+
+    if (!image.isPresent()){
+      return new ResponseEntity<>("Image requested id = " + id + "is not found!", HttpStatus.NOT_FOUND);
+    }
+
+    Optional<Image> image_2 = Optional.empty();
+    float[] option = {p2};
+
+    if (Algo.compareTo("flou") == 0) {
+      if (p1 == 0) {        // if first parameter is 0 apply mean filter
+        try {
+          image_2 = imageDao.processing(EnumProcessing.MeanFilterColor, image.get(), option);
+        }
+          catch (Exception e){
+            return new ResponseEntity<>("Internal Server Error!", HttpStatus.INTERNAL_SERVER_ERROR);
+          }
+      }
+      if (p1 == 1) {        // if first parameter is 1 apply Gauss filter
+        try {
+          image_2 = imageDao.processing(EnumProcessing.FLOUGAUSS, image.get(), option);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Internal Server Error!", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+      } else {
+        return new ResponseEntity<>("Bad Request", HttpStatus.BAD_REQUEST);
+      }
+
+      // Error if the image after applying algo is missing
+      if (!image_2.isPresent()){
+        return new ResponseEntity<>("Internal Server Error!", HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+
+    }
+    InputStream inputStream = new ByteArrayInputStream(image_2.get().getData());
+    return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(new InputStreamResource(inputStream));
+
+ }
+
+  @RequestMapping(value = "/images/{id}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE, params = {"algorithm", "p1"})
+  public ResponseEntity<?> getImage (@PathVariable("id") long id, @RequestParam ("algorithm") String Algo, @RequestParam ("p1") Float p1) {
+
+    Optional<Image> image = imageDao.retrieve(id);
+    System.out.println("First Parameter");
+
+    if (!image.isPresent()){
+      return new ResponseEntity<>("Image requested id = " + id + "is not found!", HttpStatus.NOT_FOUND);
+    }
+
+    Optional<Image> image_2 = Optional.empty();
+    float[] option = {p1};
+
+    if (Algo.compareTo("Color") == 0){
+      try {
+        image_2 = imageDao.processing(EnumProcessing.COLOR, image.get(), option);
+      } catch (Exception e){
+          return new ResponseEntity<>("Internal Server Error!", HttpStatus.INTERNAL_SERVER_ERROR); 
+      }
+    } else if (Algo.compareTo("IncreaseLuminosity") == 0){
+      try {
+        image_2 = imageDao.processing(EnumProcessing.LUMI, image.get(), option);
+      } catch (Exception e){
+        return new ResponseEntity<>("Internal Server Error!", HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    } else {
+      return new ResponseEntity<>("Bad Request", HttpStatus.BAD_REQUEST);
+    }
+    if (!image_2.isPresent()){
+      return new ResponseEntity<>("Internal Server Error!", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    InputStream inputStream = new ByteArrayInputStream(image_2.get().getData());
+    return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(new InputStreamResource(inputStream));
+  }
+
+  @RequestMapping(value = "/images/{id}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE, params = {"algorithm"})
+  public ResponseEntity<?> getImage (@PathVariable("id") long id, @RequestParam ("algorithm") String Algo) {
+    Optional<Image> image = imageDao.retrieve(id);
+    System.out.println("Algorithm name parameter");
+
+    if (!image.isPresent()){
+      return new ResponseEntity<>("Image requested id = " + id + "is not found!", HttpStatus.NOT_FOUND);
+    }
+
+    Optional<Image> image_2 = Optional.empty();
+    float[] option = {};
+
+    if (Algo.compareTo("HistoEqualisation") == 0) {
+      try {
+        image_2 = imageDao.processing(EnumProcessing.HISTO, image.get(), option);
+      } catch (Exception e){
+        return new ResponseEntity<>("Internal Server Error!", HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    } else if (Algo.compareTo("Sobel") == 0){
+      try {
+        image_2 = imageDao.processing(EnumProcessing.SOBEL, image.get(), option);
+      } catch (Exception e){
+        return new ResponseEntity<>("Internal Server Error!", HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    } else {
+      if (!image_2.isPresent()){
+        return new ResponseEntity<>("Internal Server Error!", HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
+    InputStream inputStream = new ByteArrayInputStream(image_2.get().getData());
+    return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(new InputStreamResource(inputStream));
+  }
+
+
+
+
+
+
+
 }

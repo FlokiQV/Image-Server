@@ -100,20 +100,20 @@ public class ImageDao implements Dao<Image> {
     images.remove(img.getId());
   }
 
-  public Optional<Image> processing(final EnumProcessing algo, final Image img, final float[] options) throws Exception {
+  public Optional<Image> processing(final EnumProcessing Algo, final Image img, final float[] options) throws Exception {
     InputStream is = new ByteArrayInputStream(img.getData());
     BufferedImage buffImage = ImageIO.read(is);
     Planar<GrayU8> input = ConvertBufferedImage.convertFromPlanar(buffImage, null, true, GrayU8.class);
     Planar<GrayU8> output = input.createSameShape();
-    switch(algo){
+    switch(Algo){
       case LUMI:
         ImagesAlgorithmes.lumirgb(input, output, (int)options[0]);
         break;
       case COLOR:
         ImagesAlgorithmes.teinteImage(input, output, options[0]);
         break;
-      case FLOUMOY:
-        ImagesAlgorithmes.moyrgb(input, output, (int)options[0]);
+      case MeanFilterColor:
+        ImagesAlgorithmes.MeanFilterColor(input, output, (int)options[0]);
         break;
       case FLOUGAUSS:
       ImagesAlgorithmes.GaussFilterRGB(input, output);
