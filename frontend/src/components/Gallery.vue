@@ -1,4 +1,4 @@
-npm <template>
+<template>
   <div>
     <h3>Gallery</h3>
     <div v-if="imageList.length > 0">

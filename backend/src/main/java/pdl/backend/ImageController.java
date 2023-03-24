@@ -53,7 +53,7 @@ public class ImageController {
   public ResponseEntity<?> getImage(@PathVariable("id") long id) {
 
       // Vérifie si l'id est positif
-    if (id <= 0) {
+    if (id < 0) {
       return new ResponseEntity<>("id doit être positif", HttpStatus.NOT_FOUND);
     }
     Optional<Image> image = imageDao.retrieve(id);
@@ -117,7 +117,7 @@ public class ImageController {
   @ResponseBody
   public JsonNode getImageList() throws IOException {
   
-      // Cherche le répertoire "images" dans le backend
+      /* // Cherche le répertoire "images" dans le backend
     Path baseDirectory = Paths.get("backend","src", "main", "resources");
     Path imagesDirectory = findImagesDirectory(baseDirectory);
     
@@ -127,7 +127,7 @@ public class ImageController {
         ObjectNode errorNode = mapper.createObjectNode();
         errorNode.put("error", errorMessage);
         return errorNode;
-    }
+    } */
 
     List<Image> images = imageDao.retrieveAll();
     
