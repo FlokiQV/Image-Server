@@ -55,5 +55,21 @@ li a {
   font-weight: bold;
   list-style-type: none;
   margin-top: 1em;
+
 }
+
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.gallery img {
+  width: 300px;
+  height: auto;
+  margin: 10px;
+  float: left;
+}
+
+
+
 </style>
