@@ -64,8 +64,8 @@ li a {
 }
 
 .gallery img {
-  width: 310px;
-  height: auto;
+  width: 317px;
+  height: 200px;
   margin: 5pt;
   margin-right: 40px;
   float: left;
