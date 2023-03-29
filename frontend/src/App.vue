@@ -64,9 +64,10 @@ li a {
 }
 
 .gallery img {
-  width: 300px;
+  width: 310px;
   height: auto;
-  margin: 10px;
+  margin: 5pt;
+  margin-right: 40px;
   float: left;
 }
 
