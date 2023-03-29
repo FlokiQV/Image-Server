@@ -5,7 +5,7 @@
       <Image v-for="image in imageList" :key="image.id" :id="image.id" />
     </div>
     <p v-else-if="error">{{ error }}</p>
-    <p v-else>le dossier images n'existe pas</p>
+    <p class="error"  v-else>le dossier images n'existe pas</p>
   </div>
 </template>
 
