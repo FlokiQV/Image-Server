@@ -1,3 +1,7 @@
+<template>
+  <figure :id="'gallery-'+id" :data-href="'/images/'+id"></figure>  
+</template>
+
 <script setup lang="ts">
 import { defineProps } from 'vue';
 import { api } from '@/http-api';
@@ -16,6 +20,12 @@ api.getImage(props.id)
         if (imgElt !== null && reader.result as string) {
           imgElt.setAttribute("src", (reader.result as string));
         }
+        galleryElt.addEventListener('click', () => {
+          const href = galleryElt.getAttribute('data-href');
+          if (href !== null) {
+            window.location.href = href;
+          }
+        });
       }
     };
   })
@@ -23,9 +33,3 @@ api.getImage(props.id)
     console.log(e.message);
   });
 </script>
-
-<template>
-  <figure :id="'gallery-'+id"></figure>  
-</template>
-
-<style></style>

@@ -4,12 +4,10 @@
     <div class="gallery" v-if="imageList.length > 0">
       <Image v-for="image in imageList" :key="image.id" :id="image.id" />
     </div>
-    <p v-else-if="error">{{ error }}</p>
-    <p class="error"  v-else>le dossier images n'existe pas</p>
+    <p  v-else-if="error">{{ error }}</p>
+    <p class= "error"  v-else>le dossier images n'existe pas</p>
   </div>
 </template>
-
-
 
 <script setup lang="ts">
 import { ref } from 'vue'
