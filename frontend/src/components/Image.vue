@@ -5,7 +5,10 @@
 
     
       <option value="HistoEqualisation">Egalisation histogramme</option>
-      <option value="Flou">Flou</option>
+      <option value="Sobel">Sobel</option>
+      <!-- <option value="flou">Flou</option>
+      <option value="flou">Flou</option>
+      <option value="flou">Flou</option> -->
     </select>
   </div>
   <figure :id="'gallery-'+id" :data-href="'/images/'+id"></figure>
