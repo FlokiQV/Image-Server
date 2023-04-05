@@ -6,23 +6,8 @@ import java.util.List;
 
 import boofcv.struct.image.GrayU8;
 import boofcv.struct.image.Planar;
-import java.awt.image.BufferedImage;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-
-import boofcv.alg.filter.blur.GBlurImageOps;
-import boofcv.alg.filter.convolve.GConvolveImageOps;
-import boofcv.io.image.ConvertBufferedImage;
-import boofcv.io.image.UtilImageIO;
+import boofcv.core.image.ConvertImage;
 import boofcv.struct.border.BorderType;
-import boofcv.struct.convolve.Kernel1D_S32;
-import boofcv.struct.convolve.Kernel2D_S32;
-import boofcv.struct.image.GrayU8;
-import boofcv.struct.image.Planar;
-import boofcv.abst.scene.SceneRecognition.Match;
-import boofcv.io.image.UtilImageIO;
-import boofcv.struct.image.GrayU8;
 
 public class ImagesAlgorithmes {
 
@@ -64,7 +49,7 @@ public class ImagesAlgorithmes {
           }
       }
     }
-
+   
     // Mean Filter GrayU8
     public static void meanFilterSimple(GrayU8 input, GrayU8 output, int size) {
         if(size%2 == 0) {size= size - 1;}
@@ -232,17 +217,20 @@ public class ImagesAlgorithmes {
 	}
 
     public static void convertToGray2(Planar<GrayU8> input, Planar<GrayU8> output) {
-		for (int y = 0; y < input.height;y++) {
-			for(int x = 0; x < input.width; x++){
-				int r = 0;
-				double red = (input.getBand(0).get(x,y))*0.3;
-				double green = (input.getBand(1).get(x,y))*0.59;
-				double blue = (input.getBand(2).get(x,y))*0.11;
-				r = (int)(red+green+blue);
-				output.getBand(y).set(x, y, r);
-			}
-		}
-	}
+        for (int y = 0; y < input.height;y++) {
+            for(int x = 0; x < input.width; x++){
+                int r = 0;
+                double red = (input.getBand(0).get(x,y))*0.3;
+                double green = (input.getBand(1).get(x,y))*0.59;
+                double blue = (input.getBand(2).get(x,y))*0.11;
+                r = (int)(red+green+blue);
+                for (int c = 0; c < output.getNumBands(); c++) {
+                    output.getBand(c).set(x, y, r);
+                }
+            }
+        }
+    }
+    
     static void rgbToHsv(int r, int g, int b, float[] hsv){
 		List<Integer> list = new LinkedList<Integer>();
 		list.add(r);
@@ -370,20 +358,25 @@ public class ImagesAlgorithmes {
         return lut;
     }
     // HISTROGRAMM EQUALIZATION RGB
-    public static void historgb(Planar<GrayU8> input, Planar<GrayU8> output){
-        Planar<GrayU8> greyVersion =input.createSameShape();
-		convertToGray2(input, greyVersion);
-		int [] hisLut=calculHistoLut(greyVersion.getBand(0));
-		for (int i = 0; i < input.getNumBands(); ++i){
-            GrayU8 filtrin=input.getBand(i);
-            GrayU8 filtrout=output.getBand(i);
-			for (int y = 0; y < input.height; ++y) {
-				for (int x = 0; x < input.width; ++x) {
-						filtrout.set(x,y,hisLut[filtrin.get(x,y)]);
-				}	
-			}
-		}
+   
+
+    
+    public static void historgb(Planar<GrayU8> input, Planar<GrayU8> output) {
+        Planar<GrayU8> grayVersion = input.createSameShape();
+        convertToGray2(input, grayVersion);
+        int[] lut = calculHistoLut(grayVersion.getBand(0));
+        for (int i = 0; i < input.getNumBands(); i++) {
+            GrayU8 channelIn = input.getBand(i);
+            GrayU8 channelOut = output.getBand(i);
+            for (int y = 0; y < input.height; y++) {
+                for (int x = 0; x < input.width; x++) {
+                    channelOut.set(x, y, lut[channelIn.get(x, y)]);
+                }
+            }
+        }
     }
+    
+    
 
     //RGB TO HSV V
     static int min(int r,int g,int b){
@@ -427,6 +420,8 @@ public class ImagesAlgorithmes {
     } 
 
     // SOBEL V
+    
+
     public static void gradientImageSobel(GrayU8 input, GrayU8 output) {
 
         int[][] sobelX = {
@@ -434,7 +429,7 @@ public class ImagesAlgorithmes {
                 {-2, 0, 2},
                 {-1, 0, 1}
         };
-
+    
         int[][] sobelY = {
                 {-1, -2, -1},
                 {0, 0, 0},
@@ -448,19 +443,17 @@ public class ImagesAlgorithmes {
                     for (int v = -((sobelX[0].length - 1)/2); v <= ((sobelX[0].length - 1) / 2); ++v){
                         valx += sobelX[u+((sobelX.length - 1)/2)][v+((sobelX.length - 1)/2)] * input.get(x + u, y + v);
                         valy += sobelY[u+((sobelY.length - 1)/2)][v+((sobelY.length - 1)/2)] * input.get(x + u, y + v) ;
-                        if (valx>255){
-                            valx = 255;
-                        }else if (valy > 255){
-                            valy = 255;
-                        }
                     }
                 }
-                output.set(x,y,(int) Math.hypot(valx,valy));
+                double magnitude = Math.hypot(valx, valy);
+                if (magnitude > 255) {
+                    magnitude = 255;
+                }
+                output.set(x, y, (int) magnitude);
             }
         }
     }
-
-
+    
     //SOBEL RGB V
     public static void gradientImageSobelRGB(Planar<GrayU8> input, Planar<GrayU8> output) {
         Planar<GrayU8> gray=input.clone();

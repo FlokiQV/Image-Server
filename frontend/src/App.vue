@@ -71,6 +71,4 @@ li a {
   float: left;
 }
 
-
-
 </style>
