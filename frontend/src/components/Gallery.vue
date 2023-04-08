@@ -7,6 +7,7 @@
     <p  v-else-if="error">{{ error }}</p>
     <p class= "error"  v-else>le dossier images n'existe pas</p>
   </div>
+
 </template>
 
 <script setup lang="ts">
@@ -17,7 +18,7 @@ import Image from './Image.vue';
 
 const imageList = ref<ImageType[]>([]);
 const error = ref<string | null>(null);
-
+ 
 api.getImageList()
   .then((data) => {
     imageList.value = data;
