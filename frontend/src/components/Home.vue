@@ -62,6 +62,7 @@ export default {
         selectedImage.value = { id: image.id, name: image.name };
       }
     }
+
     function applyFilter() {
       if (selectedFilter.value !== '') {
         const algorithm = selectedFilter.value;
