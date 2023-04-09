@@ -44,6 +44,7 @@ export default {
     const selectedImage = ref<SelectedImage | null>(null);
     const imageList = ref<ImageType[]>([]);
     const selectedFilter = ref('');
+    const showFilter = ref(false);
 
     getImageList();
 
@@ -61,39 +62,42 @@ export default {
       const image = imageList.value.find((image) => image.id === selectedId.value);
       if (image) {
         selectedImage.value = { id: image.id, name: image.name };
+        showFilter.value = false; // reset showFilter when selecting a new image
       }
     }
 
     function applyFilter() {
-      if (selectedFilter.value !== '') {
-        const algorithm = selectedFilter.value;
-        axios
-          .get(`/images/${selectedImage.value?.id}`, {
-            params: {
-              algorithm,
-            },
-            responseType: 'blob',
-          })
-          .then((response) => {
-            const reader = new window.FileReader();
-            reader.readAsDataURL(response.data);
-            reader.onload = () => {
-              const galleryElt = document.getElementById(`gallery-${selectedImage.value?.id}`);
-              if (galleryElt) {
-                const imgElt = galleryElt.querySelector('img');
-                if (imgElt && reader.result) {
-                  imgElt.setAttribute('src', reader.result as string);
-                }
-              }
-              router.push({ name: 'image', params: { id: selectedId.value.toString() } });
-            };
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      }
-    }
+  if (selectedFilter.value !== '') {
+    const algorithm = selectedFilter.value;
+    axios
+      .get(`/images/${selectedImage.value?.id}`, {
+        params: {
+          algorithm,
+        },
+        responseType: 'blob',
+      })
+      .then((response) => {
+        const reader = new window.FileReader();
+        reader.readAsDataURL(response.data);
+        reader.onload = () => {
+          const galleryElt = document.getElementById(`gallery-${selectedImage.value?.id}`);
+          if (galleryElt) {
+            const imgElt = galleryElt.querySelector('img');
+            if (imgElt && reader.result) {
+              imgElt.setAttribute('src', reader.result as string);
+              showFilter.value = true; // show the filter bar after applying a filter
+            }
+          }
+        };
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  } else {
+    showFilter.value = false; // hide the filter bar if no filter is selected
+  }
 
+    }
     return {
       selectedId,
       selectedImage,
@@ -101,6 +105,7 @@ export default {
       selectedFilter,
       showImage,
       applyFilter,
+      showFilter,
     };
   },
 };
@@ -123,7 +128,7 @@ export default {
   background-size: 200% auto;
   color: #fff;
   background-clip: text;
-  text-fill-color: transparent;
+  scrollbar-color: transparent;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: textclip 2s linear infinite;
