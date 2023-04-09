@@ -28,6 +28,7 @@ function toggleDarkMode() {
       <button @click="toggleDarkMode">{{ darkMode ? 'Light' : 'Dark' }} mode</button>
     </nav>
 
+    <br>    <br>
     <div>
       <!-- <h1>PDL - L3</h1> -->
       <router-view />
@@ -47,6 +48,20 @@ function toggleDarkMode() {
   background-color: #333;
   color: white;
 }
+.dark-mode h1,
+.dark-mode h2,
+.dark-mode h3,
+.dark-mode h4,
+.dark-mode h5,
+.dark-mode h6 {
+  color: white;
+}
+
+.dark-mode input[type='file'] {
+  color: rgba(0, 0, 0, 0)
+}
+
+
 
 ul {
   list-style-type: none;

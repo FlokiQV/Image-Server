@@ -15,7 +15,6 @@
 </div>
 
 <p class="error-message" v-if="error">{{ error }}</p>
-<p class="no-images-message" v-else>There are no images to display.</p>
 </div>
 </template>
 <script setup lang="ts">
