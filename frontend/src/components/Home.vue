@@ -16,12 +16,13 @@
         <option value="Sobel">Sobel</option>
         <option value="flou">flou</option>
       </select>
-      <button @click="applyBlur">Apply</button>
+      
 
       
       <div v-if="selectedFilter === 'flou'">
         <label for="blurParam">Blur Parameter: </label>
         <input type="number" id="blurParam" v-model="blurParam" min="1" max="10"/>
+        <button @click="applyBlur">Apply</button>
       </div>
     </div>
     
@@ -40,7 +41,7 @@ import router from '@/router';
 import { api } from '@/http-api';
 import { ImageType } from '@/image';
 import axios from 'axios';
-import p5 from 'p5';
+
 
 
 interface SelectedImage {
