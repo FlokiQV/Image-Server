@@ -1,3 +1,4 @@
+
 <template>
   <b><span class="animate-charcter">Home</span></b>
   <div>
@@ -15,6 +16,9 @@
         <option value="HistoEqualisation">Histogram Equalization</option>
         <option value="Sobel">Sobel</option>
         <option value="flou">flou</option>
+        <option value="IncreaseLuminosity">Luminosity</option>
+        <option value="Color">Color</option>
+
       </select>
       
 
@@ -24,7 +28,19 @@
         <input type="number" id="blurParam" v-model="blurParam" min="1" max="10"/>
         <button @click="applyBlur">Apply</button>
       </div>
-    </div>
+
+      <div v-if="selectedFilter === 'IncreaseLuminosity'">
+        <label for="lumParam">Lum Parameter: </label>
+        <input type="number" id="lumParam" v-model="lumParam" min="1" max="10" />
+        <button @click="applyLum">Apply</button>
+      </div>
+
+      <div v-if="selectedFilter === 'Color'">
+        <label for="ColorParam">Color Parameter: </label>
+        <input type="number" id="ColorParam" v-model="ColorParam" min="1" max="10"/>
+        <button @click="applyColor">Apply</button>
+      </div>
+   </div>
     
     <div v-if="selectedImage">
       <h3>{{ selectedImage.name }}</h3>
@@ -60,6 +76,11 @@ export default {
     const selectedFilter = ref('');
     const showFilter = ref(false);
     const blurParam = ref(1);
+    const lumParam =ref(1);
+    const lumFilterParam = ref(1);
+    const ColorParam = ref(0);
+
+
     getImageList();
 
     function getImageList() {
@@ -81,6 +102,8 @@ export default {
         showFilter.value = false;
       }
     }
+   
+
     function applyBlur() {
   if (selectedImage.value) {
     axios
@@ -155,18 +178,117 @@ export default {
     showFilter.value = false; // hide the filter bar if no filter is selected
   }
 }
+function applyLum() {
+  if (selectedImage.value) {
+    axios
+      .get(`/images/${selectedImage.value?.id}`, {
+        responseType: 'blob',
+      })
+      .then((response) => {
+        const reader = new window.FileReader();
+        reader.readAsDataURL(response.data);
+        reader.onload = () => {
+          const img = new Image();
+          img.src = reader.result as string;
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const context = canvas.getContext('2d')!;
+            context.drawImage(img, 0, 0);
+            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
+            const lumFactor = lumParam.value / 10;
+            for (let i = 0; i < data.length; i += 4) {
+              const r = data[i];
+              const g = data[i + 1];
+              const b = data[i + 2];
+              const gray = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+              data[i] = Math.min(r + gray * lumFactor, 255);
+              data[i + 1] = Math.min(g + gray * lumFactor, 255);
+              data[i + 2] = Math.min(b + gray * lumFactor, 255);
+            }
+            context.putImageData(imageData, 0, 0);
+            const base64 = canvas.toDataURL();
+            filteredImage.value = { id: selectedImage.value!.id, name: `${selectedImage.value!.name}-luminosity` };
+            const galleryElt = filteredImage.value ? document.getElementById(`gallery-${filteredImage.value.id}`) : null;
+            if (galleryElt) {
+              const imgElt = galleryElt.querySelector('img');
+              if (imgElt) {
+                imgElt.setAttribute('src', base64);
+                showFilter.value = true;
+              }
+            }
+          };
+        };
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+}
+
+
+
+function applyColor() {
+  if (selectedImage.value) {
+    axios
+      .get(`/images/${selectedImage.value?.id}`, {
+        responseType: 'blob',
+      })
+      .then((response) => {
+        const reader = new window.FileReader();
+        reader.readAsDataURL(response.data);
+        reader.onload = () => {
+          const img = new Image();
+          img.src = reader.result as string;
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const context = canvas.getContext('2d')!;
+            const red = ColorParam.value * 25; // convert the color parameter to a value between 0 and 255
+            context.filter = `sepia(100%) hue-rotate(${red}deg)`;
+            context.drawImage(img, 0, 0);
+            const base64 = canvas.toDataURL();
+            filteredImage.value = { id: selectedImage.value!.id, name: `${selectedImage.value!.name}-color` }; // update filteredImage reference
+            const galleryElt = filteredImage.value ? document.getElementById(`gallery-${filteredImage.value.id}`) : null;
+            if (galleryElt) {
+              const imgElt = galleryElt.querySelector('img');
+              if (imgElt) {
+                imgElt.setAttribute('src', base64);
+                showFilter.value = true; // show the filter bar after applying a filter
+              }
+            }
+          };
+        };
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+}
+
+
+
 
     return {
       selectedId,
-      selectedImage,
-      imageList,
-      selectedFilter,
-       blurParam ,
-      showImage,
-      applyFilter,
-      showFilter,
-      applyBlur,
+  selectedImage,
+  filteredImage,
+  imageList,
+  selectedFilter,
+  showFilter,
+  blurParam,
+  lumParam,
+  ColorParam,
+  showImage,
+  applyBlur,
+  applyLum,
+  applyColor,
+  applyFilter,
     };
+    
   },
 };
 </script>
