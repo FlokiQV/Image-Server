@@ -12,7 +12,6 @@
     <div v-if="selectedImage">
       <h3 for="filter-select">Filter:</h3>
       <select id="filter-select" v-model="selectedFilter" @change="applyFilter">
-        <option value="">Select a filter</option>
         <option value="HistoEqualisation">Histogram Equalization</option>
         <option value="Sobel">Sobel</option>
         <option value="flou">flou</option>
@@ -20,35 +19,52 @@
         <option value="Color">Color</option>
 
       </select>
+
+      <div v-if="selectedFilter === 'Sobel'">
+        <button @click="downloadImage">Download</button>
+
+      </div>
       
 
-      
+      <div v-if="selectedFilter === 'HistoEqualisation'">
+        <button @click="downloadImage">Download</button>
+
+      </div>
+
+
       <div v-if="selectedFilter === 'flou'">
         <label for="blurParam">Blur Parameter: </label>
         <input type="number" id="blurParam" v-model="blurParam" min="1" max="10"/>
         <button @click="applyBlur">Apply</button>
+        <button @click="downloadImage">Download</button>
+
       </div>
 
       <div v-if="selectedFilter === 'IncreaseLuminosity'">
         <label for="lumParam">Lum Parameter: </label>
         <input type="number" id="lumParam" v-model="lumParam" min="1" max="10" />
         <button @click="applyLum">Apply</button>
+        <button @click="downloadImage">Download</button>
+
       </div>
 
       <div v-if="selectedFilter === 'Color'">
         <label for="ColorParam">Color Parameter: </label>
         <input type="number" id="ColorParam" v-model="ColorParam" min="1" max="10"/>
         <button @click="applyColor">Apply</button>
+        <button @click="downloadImage">Download</button>
+
       </div>
    </div>
     
-    <div v-if="selectedImage">
-      <h3>{{ selectedImage.name }}</h3>
-      <div :id="'gallery-' + selectedImage.id">
-        <img :src="'/images/' + selectedImage.id" alt="Selected image">
-      </div>
-    </div>
+   <div v-if="selectedImage">
+  <h3>{{ selectedImage.name }}</h3>
+  <div :id="'gallery-' + selectedImage.id">
+    <img :src="'/images/' + selectedImage.id" alt="Selected image">
   </div>
+   </div>
+  </div>
+
 </template>
 
 <script lang="ts">
@@ -66,6 +82,7 @@ interface SelectedImage {
 }
 
 
+
 export default {
   name: 'ImageGallery',
   setup() {
@@ -79,7 +96,8 @@ export default {
     const lumParam =ref(1);
     const lumFilterParam = ref(1);
     const ColorParam = ref(0);
-
+    
+ 
 
     getImageList();
 
@@ -92,6 +110,29 @@ export default {
           console.log(e.message);
         });
     }
+
+
+    function downloadImage() {
+  if (filteredImage.value) {
+    const galleryElt = document.getElementById(`gallery-${filteredImage.value.id}`);
+    if (galleryElt) {
+      const imgElt = galleryElt.querySelector('img');
+      const filteredImgElt = galleryElt.querySelector('.filtered-image'); // nouvelle ligne
+      const imgSrc = filteredImgElt ? filteredImgElt.src : imgElt.src; // nouvelle ligne
+      if (imgElt) {
+        const link = document.createElement('a');
+        link.download = `${filteredImage.value.name}.png`;
+        link.href = imgSrc;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    }
+  }
+}
+
+
+
 
 
     function showImage() {
@@ -287,6 +328,7 @@ function applyColor() {
   applyLum,
   applyColor,
   applyFilter,
+  downloadImage,
     };
     
   },
