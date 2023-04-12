@@ -112,7 +112,6 @@ li a {
   background-size: 200% auto;
   color: #fff;
   background-clip: text;
-  text-fill-color: transparent;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: textclip 2s linear infinite;
@@ -123,5 +122,10 @@ li a {
   to {
     background-position: 200% center;
   }
+}
+
+.imghome{
+  width: 817px;
+  height: 500px;
 }
 </style>

@@ -61,7 +61,7 @@
    <div v-if="selectedImage">
   <h3>{{ selectedImage.name }}</h3>
   <div :id="'gallery-' + selectedImage.id">
-    <img :src="'/images/' + selectedImage.id" alt="Selected image">
+    <img class="imghome" :src="'/images/' + selectedImage.id" alt="Selected image">
   </div>
    </div>
   </div>
