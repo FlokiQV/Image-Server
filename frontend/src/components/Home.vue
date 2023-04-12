@@ -4,14 +4,14 @@
   <div>
     <h3>Choose an image</h3>
     <div>
-      <select v-model="selectedId" @change="showImage">
+      <select class="select-box" v-model="selectedId" @change="showImage">
         <option value="-1" disabled selected>Select an image</option>
         <option v-for="image in imageList" :value="image.id" :key="image.id">{{ image.name }}</option>
       </select>
     </div>
     <div v-if="selectedImage">
       <h3 for="filter-select">Filter:</h3>
-      <select id="filter-select" v-model="selectedFilter" @change="applyFilter">
+      <select class="select-box" id="filter-select" v-model="selectedFilter" @change="applyFilter">
         <option value="">Select a filter</option>
         <option value="HistoEqualisation">Histogram Equalization</option>
         <option value="Sobel">Sobel</option>
@@ -26,19 +26,19 @@
       <div v-if="selectedFilter === 'flou'">
         <label for="blurParam">Blur Parameter: </label>
         <input type="number" id="blurParam" v-model="blurParam" min="1" max="10"/>
-        <button @click="applyBlur">Apply</button>
+        <button id="applybutton" @click="applyBlur">Apply</button>
       </div>
 
       <div v-if="selectedFilter === 'IncreaseLuminosity'">
         <label for="lumParam">Lum Parameter: </label>
         <input type="number" id="lumParam" v-model="lumParam" min="1" max="10" />
-        <button @click="applyLum">Apply</button>
+        <button id="applybutton" @click="applyLum">Apply</button>
       </div>
 
       <div v-if="selectedFilter === 'Color'">
         <label for="ColorParam">Color Parameter: </label>
         <input type="number" id="ColorParam" v-model="ColorParam" min="1" max="10"/>
-        <button @click="applyColor">Apply</button>
+        <button  id="applybutton" @click="applyColor">Apply</button>
       </div>
    </div>
     
@@ -294,4 +294,59 @@ function applyColor() {
 </script>
 
 <style scoped>
+#applybutton {
+  margin-left: 150px;
+  
+  text-decoration: none;
+  position: relative;
+  border: none;
+  font-size: 14px;
+  font-family: inherit;
+  color: #fff;
+  width: 7%;
+  height: 12%;
+  line-height: 2em;
+  text-align: center;
+  background: linear-gradient(90deg,#03a9f4,#f441a5,#ffeb3b,#03a9f4);
+  background-size: 300%;
+  border-radius: 30px;
+  z-index: 1;
+}
+
+#applybutton:hover {
+  animation: ani 8s linear infinite;
+  border: none;
+}
+
+@keyframes ani {
+  0% {
+    background-position: 0%;
+  }
+
+  100% {
+    background-position: 400%;
+  }
+}
+
+#applybutton:before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  z-index: -1;
+  background: linear-gradient(90deg,#03a9f4,#f441a5,#ffeb3b,#03a9f4);
+  background-size: 400%;
+  border-radius: 35px;
+  transition: 1s;
+}
+
+#applybutton:hover::before {
+  filter: blur(20px);
+}
+
+#applybutton:active {
+  background: linear-gradient(32deg,#03a9f4,#f441a5,#ffeb3b,#03a9f4);
+}
 </style>
