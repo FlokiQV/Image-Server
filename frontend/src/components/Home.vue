@@ -12,15 +12,16 @@
     <div v-if="selectedImage">
       <h3 for="filter-select">Filter:</h3>
       <select id="filter-select" v-model="selectedFilter" @change="applyFilter">
-        <option value="HistoEqualisation">Histogram Equalization</option>
-        <option value="Sobel">Sobel</option>
         <option value="flou">flou</option>
+        <option value="HistoEqualisation">Histogram Equalization</option>
         <option value="IncreaseLuminosity">Luminosity</option>
+        <option value="Sobel">Sobel</option>
         <option value="Color">Color</option>
 
       </select>
 
       <div v-if="selectedFilter === 'Sobel'">
+
         <button @click="downloadImage">Download</button>
 
       </div>
@@ -94,7 +95,6 @@ export default {
     const showFilter = ref(false);
     const blurParam = ref(1);
     const lumParam =ref(1);
-    const lumFilterParam = ref(1);
     const ColorParam = ref(0);
     
  
@@ -111,26 +111,26 @@ export default {
         });
     }
 
-
     function downloadImage() {
   if (filteredImage.value) {
     const galleryElt = document.getElementById(`gallery-${filteredImage.value.id}`);
     if (galleryElt) {
-      const imgElt = galleryElt.querySelector('img');
-      const filteredImgElt = galleryElt.querySelector('.filtered-image'); // nouvelle ligne
-      const imgSrc = filteredImgElt ? filteredImgElt.src : imgElt.src; // nouvelle ligne
-      if (imgElt) {
-        const link = document.createElement('a');
-        link.download = `${filteredImage.value.name}.png`;
-        link.href = imgSrc;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
+      const imgElt: HTMLImageElement | null = galleryElt.querySelector('img');
+      const filteredImgElt = document.createElement('img'); // create new image element
+      filteredImgElt.src = imgElt ? imgElt.src : ''; // set source to filtered image data URL
+
+      const sobelFilterId = 'sobel';
+      const link = document.createElement('a');
+      link.download = `${sobelFilterId}-${filteredImage.value.name ?? 'filtered-image'}.png`;
+      link.href = filteredImgElt.src;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
+  } else {
+    console.log("Filtered image does not exist");
   }
 }
-
 
 
 
@@ -187,7 +187,6 @@ export default {
     function applyFilter() {
       if (selectedFilter.value !== '') {
         const algorithm = selectedFilter.value;
-        
       // Apply the selected filter
       axios
         .get(`/images/${selectedImage.value?.id}`, {
