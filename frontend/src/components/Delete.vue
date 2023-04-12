@@ -3,7 +3,7 @@
   <div>
     <h3>Delete an image</h3>
     <div>
-      <select v-model="selectedId">
+      <select class="select-box" v-model="selectedId">
         <option v-for="image in imageList" :value="image.id" :key="image.id">{{ image.id }}</option>
       </select>
     </div>
