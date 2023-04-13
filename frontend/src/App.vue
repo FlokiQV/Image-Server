@@ -60,7 +60,9 @@ function toggleDarkMode() {
 .dark-mode input[type='file'] {
   color: rgba(0, 0, 0, 0)
 }
-
+.dark-mode #labelw {
+  color: white;
+}
 
 
 ul {
@@ -199,4 +201,64 @@ li a {
     transform: scaleY(0);
   }
 }
+
+#applybutton {
+  text-decoration: none;
+  position: relative;
+  border: none;
+  font-size: 14px;
+  font-family: inherit;
+  color: #fff;
+  width: 7%;
+  height: 12%;
+  line-height: 2em;
+  text-align: center;
+  background: linear-gradient(90deg,#03a9f4,#f441a5,#ffeb3b,#03a9f4);
+  background-size: 300%;
+  border-radius: 30px;
+  z-index: 1;
+}
+
+#applybutton:hover {
+  animation: ani 8s linear infinite;
+  border: none;
+}
+
+@keyframes ani {
+  0% {
+    background-position: 0%;
+  }
+
+  100% {
+    background-position: 400%;
+  }
+}
+
+#applybutton:before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  z-index: -1;
+  background: linear-gradient(90deg,#03a9f4,#f441a5,#ffeb3b,#03a9f4);
+  background-size: 400%;
+  border-radius: 35px;
+  transition: 1s;
+}
+
+#applybutton:hover::before {
+  filter: blur(20px);
+}
+
+#applybutton:active {
+  background: linear-gradient(32deg,#03a9f4,#f441a5,#ffeb3b,#03a9f4);
+}
+
+.Home #applybutton{
+  margin-left: 200px;
+}
+
+
 </style>

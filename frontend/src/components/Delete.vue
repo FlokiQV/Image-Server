@@ -1,7 +1,7 @@
 <template>
   <b><span class="animate-charcter">Delete</span></b>
   <div>
-    <h3>Delete an image</h3>
+    <h3>Chose the image</h3>
     <div>
       <select class="select-box" v-model="selectedId">
         <option v-for="image in imageList" :value="image.id" :key="image.id">{{ image.id }}</option>
@@ -9,7 +9,7 @@
     </div>
     <br><br>
     <div>
-      <button @click="deleteImage">Delete</button>
+      <button id="applybutton" @click="deleteImage">Delete</button>
     </div>
   </div>
 </template>
