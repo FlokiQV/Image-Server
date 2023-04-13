@@ -14,8 +14,7 @@
         <option value="">Select a filter</option>
       <select id="filter-select" v-model="selectedFilter" @change="applyFilter">
 
-        <option value="HistoEqualisation">Histogram Equalization</option>
-        <option value="Sobel">Sobel</option>
+        
         <option value="flou">flou</option>
         <option value="HistoEqualisation">Histogram Equalization</option>
         <option value="IncreaseLuminosity">Luminosity</option>
@@ -41,7 +40,6 @@
         <label for="blurParam">Blur Parameter: </label>
         <input type="number" id="blurParam" v-model="blurParam" min="1" max="10"/>
         <button id="applybutton" @click="applyBlur">Apply</button>
-        <button @click="applyBlur">Apply</button>
         <button @click="downloadImage">Download</button>
 
       </div>
@@ -50,7 +48,6 @@
         <label for="lumParam">Lum Parameter: </label>
         <input type="number" id="lumParam" v-model="lumParam" min="1" max="10" />
         <button id="applybutton" @click="applyLum">Apply</button>
-        <button @click="applyLum">Apply</button>
         <button @click="downloadImage">Download</button>
 
       </div>
@@ -59,7 +56,6 @@
         <label for="ColorParam">Color Parameter: </label>
         <input type="number" id="ColorParam" v-model="ColorParam" min="1" max="10"/>
         <button  id="applybutton" @click="applyColor">Apply</button>
-        <button @click="applyColor">Apply</button>
         <button @click="downloadImage">Download</button>
 
       </div>
@@ -70,7 +66,12 @@
   <div :id="'gallery-' + selectedImage.id">
     <img class="imghome" :src="'/images/' + selectedImage.id" alt="Selected image">
   </div>
+  
    </div>
+  
+
+
+
   </div>
 
 </template>
