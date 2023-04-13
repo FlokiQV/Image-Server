@@ -1,4 +1,3 @@
-
 <template>
   <b><span class="animate-charcter">Home</span></b>
   <div>
@@ -36,44 +35,42 @@
 
       <div v-if="selectedFilter === 'flou'">
         <label id="labelw" for="blurParam">Blur Parameter: </label>
-        <input type="number" id="blurParam" v-model="blurParam" min="1" max="10"/>
-        
+        <input type="number" id="blurParam" v-model="blurParam" min="1" max="10"/>       
         <button id="applybutton" style="margin-left: 30px;" @click="applyBlur">Apply</button>
         <button id="applybutton" style="margin-left: 30px;" @click="downloadImage">Download</button>
-
       </div>
 
       <div v-if="selectedFilter === 'IncreaseLuminosity'">
         <label id="labelw" for="lumParam">Lum Parameter: </label>
-        <input type="number" id="lumParam" v-model="lumParam" min="1" max="10" />
-        
+        <input type="number" id="lumParam" v-model="lumParam" min="1" max="10" />       
         <button id="applybutton" style="margin-left: 30px;"  @click="applyLum">Apply</button>
         <button id="applybutton" style="margin-left: 30px;"  @click="downloadImage">Download</button>
-
       </div>
 
       <div v-if="selectedFilter === 'Color'">
         <label id="labelw" for="ColorParam">Color Parameter: </label>
         <input type="number" id="ColorParam" v-model="ColorParam" min="1" max="10"/>
-
-
         <button  id="applybutton" style="margin-left: 30px;"  @click="applyColor">Apply</button>
         <button id="applybutton" style="margin-left: 30px;"  @click="downloadImage">Download</button>
-
       </div>
    </div>
     
-   <div v-if="selectedImage">
-  <h3>{{ selectedImage.name }}</h3>
-  <div :id="'gallery-' + selectedImage.id">
+   <br>
+   <br>
+
+   <div v-if="selectedImage" class="images-container">
+ 
+  <div style="margin-left: 30px;" class="image-wrapper">
+    <h3>Before:</h3>
     <img class="imghome" :src="'/images/' + selectedImage.id" alt="Selected image">
   </div>
+
+  <div :id="'gallery-' + selectedImage.id" class="image-wrapper">
+    <h3>After:</h3>
+        <img class="imghome" :src="'/images/' + selectedImage.id" alt="Selected image">
+      </div>
   
    </div>
-  
-
-
-
   </div>
 
 </template>
@@ -345,4 +342,13 @@ function applyColor() {
 </script>
 
 <style scoped>
+.images-container {
+  display: flex;
+}
+
+.image-wrapper {
+  display: inline-block;
+  margin-right: 65px;
+}
+
 </style>

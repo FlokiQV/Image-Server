@@ -126,8 +126,8 @@ li a {
   }
 }
 .imghome{
-  width: 817px;
-  height: 500px;}
+  width: 650px;
+  height: auto;}
 
 #myButton {
   --glow-color: rgb(217, 176, 255);
