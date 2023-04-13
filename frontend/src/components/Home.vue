@@ -37,8 +37,7 @@
       <div v-if="selectedFilter === 'flou'">
         <label id="labelw" for="blurParam">Blur Parameter: </label>
         <input type="number" id="blurParam" v-model="blurParam" min="1" max="10"/>
-        <button id="applybutton" @click="applyBlur">Apply</button>
-        <button @click="downloadImage">Download</button>
+        
         <button id="applybutton" style="margin-left: 30px;" @click="applyBlur">Apply</button>
         <button id="applybutton" style="margin-left: 30px;" @click="downloadImage">Download</button>
 
@@ -47,8 +46,7 @@
       <div v-if="selectedFilter === 'IncreaseLuminosity'">
         <label id="labelw" for="lumParam">Lum Parameter: </label>
         <input type="number" id="lumParam" v-model="lumParam" min="1" max="10" />
-        <button id="applybutton" @click="applyLum">Apply</button>
-        <button @click="downloadImage">Download</button>
+        
         <button id="applybutton" style="margin-left: 30px;"  @click="applyLum">Apply</button>
         <button id="applybutton" style="margin-left: 30px;"  @click="downloadImage">Download</button>
 
@@ -57,8 +55,7 @@
       <div v-if="selectedFilter === 'Color'">
         <label id="labelw" for="ColorParam">Color Parameter: </label>
         <input type="number" id="ColorParam" v-model="ColorParam" min="1" max="10"/>
-        <button  id="applybutton" @click="applyColor">Apply</button>
-        <button @click="downloadImage">Download</button>
+
 
         <button  id="applybutton" style="margin-left: 30px;"  @click="applyColor">Apply</button>
         <button id="applybutton" style="margin-left: 30px;"  @click="downloadImage">Download</button>
