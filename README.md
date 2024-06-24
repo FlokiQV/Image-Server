@@ -51,3 +51,4 @@ Notre client web a été testé sur Google Chrome ainsi que Safari.
   - Mise en place d'un menu de selection de chaque filtre
   - Interface utilisateur modifiée en retirant les entrées de texte mais en favorisant l'utilisation de selecteur et/ou curseur de défilement
 
+# Image-Server
