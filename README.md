@@ -1,7 +1,7 @@
 
 # Projet client-serveur
 
-Projet PDL réalisé par Id-Rais Safouane, HAJI Wissal et WARDEH Amir.
+Projet PDL réalisé par WARDEH Amir.
 
 ## Lancer le projet
 
